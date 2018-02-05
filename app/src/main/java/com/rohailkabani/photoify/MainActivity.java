@@ -7,7 +7,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements GetData.OnDownloadComplete{
     private static final String TAG = "MainActivity";
 
     @Override
@@ -18,7 +18,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        GetData getData = new GetData();
+        GetData getData = new GetData(this);
         getData.execute("https://api.flickr.com/services/feeds/photos_public.gne?tags=android&tagmode=any&format=json&nojsoncallback=1");
 
         Log.d(TAG, "onCreate: Ends.");
@@ -45,5 +45,13 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void OnDownloadComplete (String data, DOWNLOAD_STATUS status) {
+        if (status == DOWNLOAD_STATUS.OK) {
+            Log.d(TAG, "OnDownloadComplete: " + data);
+        } else {
+            Log.e(TAG, "OnDownloadComplete: " + status );
+        }
     }
 }

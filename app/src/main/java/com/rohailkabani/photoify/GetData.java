@@ -17,14 +17,25 @@ class GetData extends AsyncTask<String, Void, String> {
     private static final String TAG = "GetData";
 
     private DOWNLOAD_STATUS downloadStatus;
+    private final OnDownloadComplete callback;
 
-    public GetData() {
+    //make sure whatever class implements this, must have a onDownloadComplete method
+    interface OnDownloadComplete {
+        void OnDownloadComplete(String data, DOWNLOAD_STATUS status);
+    }
+
+    public GetData(OnDownloadComplete callback) {
         this.downloadStatus = DOWNLOAD_STATUS.IDLE;
+        this.callback = callback;
     }
 
     @Override
     protected void onPostExecute(String s) {
         Log.d(TAG, "onPostExecute: " + s);
+        if (this.callback != null) {
+            callback.OnDownloadComplete(s, downloadStatus);
+        }
+        Log.d(TAG, "onPostExecute: ends.");
 //        super.onPostExecute(s);
     }
 
