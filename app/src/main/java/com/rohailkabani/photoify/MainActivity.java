@@ -7,7 +7,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class MainActivity extends AppCompatActivity implements GetData.OnDownloadComplete{
+import java.util.List;
+
+public class MainActivity extends AppCompatActivity implements GetJsonData.OnDataAvailable {
     private static final String TAG = "MainActivity";
 
     @Override
@@ -18,10 +20,17 @@ public class MainActivity extends AppCompatActivity implements GetData.OnDownloa
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        GetData getData = new GetData(this);
-        getData.execute("https://api.flickr.com/services/feeds/photos_public.gne?tags=android&tagmode=any&format=json&nojsoncallback=1");
-
         Log.d(TAG, "onCreate: Ends.");
+    }
+
+    @Override
+    protected void onResume() {
+        Log.d(TAG, "onResume: Starts.");
+        super.onResume();
+        GetJsonData getJsonData = new GetJsonData(this,"https://api.flickr.com/services/feeds/photos_public.gne", "en-us", true);
+        getJsonData.executeOnSameThread("android, nougat");
+        Log.d(TAG, "onResume: Ends.");
+
     }
 
     @Override
@@ -47,7 +56,8 @@ public class MainActivity extends AppCompatActivity implements GetData.OnDownloa
         return super.onOptionsItemSelected(item);
     }
 
-    public void OnDownloadComplete (String data, DOWNLOAD_STATUS status) {
+    @Override
+    public void onDataAvailable(List<Photo> data, DOWNLOAD_STATUS status) {
         if (status == DOWNLOAD_STATUS.OK) {
             Log.d(TAG, "OnDownloadComplete: " + data);
         } else {

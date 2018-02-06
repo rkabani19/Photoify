@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.util.Log;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -60,8 +61,9 @@ class GetJsonData implements GetData.OnDownloadComplete {
 
         if (status == DOWNLOAD_STATUS.OK) {
             photoList = new ArrayList<>();
+
             try {
-                JSONObject jsonObject = new JSONObject();
+                JSONObject jsonObject = new JSONObject(data);
                 JSONArray jsonArray = jsonObject.getJSONArray("items");
 
                 for (int i = 0; i < jsonArray.length(); i++) {
@@ -69,12 +71,28 @@ class GetJsonData implements GetData.OnDownloadComplete {
                     String jsonTitle = jsonPhoto.getString("title");
                     String jsonAuthor = jsonPhoto.getString("author");
                     String jsonAuthorID = jsonPhoto.getString("author_id");
-                    
+                    String jsonTags = jsonPhoto.getString("tags");
 
+                    JSONObject jsonMedia = jsonPhoto.getJSONObject("media");
+                    String jsonPhotoURL = jsonMedia.getString("m");
+                    String link = jsonPhotoURL.replaceFirst("_m.", "_b.");
 
+                    Photo photoObject = new Photo(jsonTitle, jsonAuthor, jsonAuthorID, link, jsonTags, jsonPhotoURL);
+                    photoList.add(photoObject);
+
+                    Log.d(TAG, "OnDownloadComplete " + photoObject.toString());
                 }
-                
+            } catch (JSONException e) {
+                Log.e(TAG, "OnDownloadComplete: Error processing JSON data. " + e.getMessage());
+                status = DOWNLOAD_STATUS.FAILED_OR_EMPTY;
             }
         }
+
+        if (callback != null) {
+            //now inform the caller that processing is done (possibly returning null if there was an error)
+            callback.onDataAvailable(photoList, status);
+        }
+
+        Log.d(TAG, "OnDownloadComplete: Finished.");
     }
 }
