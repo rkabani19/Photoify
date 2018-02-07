@@ -94,4 +94,16 @@ class GetData extends AsyncTask<String, Void, String> {
         downloadStatus = DOWNLOAD_STATUS.FAILED_OR_EMPTY;
         return null;
     }
+
+//    void runInSameThread (String s) {
+//        Log.d(TAG, "runInSameThread: Starts.");
+//
+////        onPostExecute(doInBackground(s));
+//
+//        if (callback != null) {
+//            callback.OnDownloadComplete(doInBackground(s), downloadStatus);
+//        }
+//
+//        Log.d(TAG, "runInSameThread: Ends.");
+//    }
 }

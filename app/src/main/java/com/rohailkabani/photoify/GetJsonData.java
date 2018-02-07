@@ -1,6 +1,7 @@
 package com.rohailkabani.photoify;
 
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -14,18 +15,42 @@ import java.util.List;
  * Created by rohailkabani on 2018-02-04.
  */
 
-class GetJsonData implements GetData.OnDownloadComplete {
+class GetJsonData extends AsyncTask<String, Void, List<Photo>> implements GetData.OnDownloadComplete {
     private static final String TAG = "GetJsonData";
 
     private List<Photo> photoList = null;
     private String baseURL;
     private String language;
     private boolean matchAll;
+    private boolean runningOnSameThread = false;
 
     private final OnDataAvailable callback;
 
     interface OnDataAvailable {
         void onDataAvailable (List<Photo> data, DOWNLOAD_STATUS status);
+    }
+
+    @Override
+    protected void onPostExecute(List<Photo> photos) {
+        Log.d(TAG, "onPostExecute: Starts.");
+
+        if (callback != null) {
+            callback.onDataAvailable(photoList, DOWNLOAD_STATUS.OK);
+        }
+
+        Log.d(TAG, "onPostExecute: Ends.");
+    }
+
+    @Override
+    protected List<Photo> doInBackground(String... strings) {
+        Log.d(TAG, "doInBackground: Starts.");
+        String destinationUri = createUri(strings[0], language, matchAll);
+
+        GetData getData = new GetData(this);
+        getData.execute(destinationUri);
+        Log.d(TAG, "doInBackground: Ends.");
+
+        return photoList;
     }
 
     public GetJsonData(OnDataAvailable callback, String baseURL, String language, boolean matchAll) {
@@ -38,6 +63,7 @@ class GetJsonData implements GetData.OnDownloadComplete {
 
     void executeOnSameThread (String searchCriteria) {
         Log.d(TAG, "executeOnSameThread: Start.");
+        runningOnSameThread = true;
         String destinationUri = createUri(searchCriteria, language, matchAll);
         GetData getData = new GetData(this);
         getData.execute(destinationUri);
@@ -88,7 +114,7 @@ class GetJsonData implements GetData.OnDownloadComplete {
             }
         }
 
-        if (callback != null) {
+        if (callback != null & runningOnSameThread) {
             //now inform the caller that processing is done (possibly returning null if there was an error)
             callback.onDataAvailable(photoList, status);
         }
