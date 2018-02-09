@@ -2,15 +2,19 @@ package com.rohailkabani.photoify;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements GetJsonData.OnDataAvailable {
     private static final String TAG = "MainActivity";
+    private RecyclerViewAdapter recyclerViewAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,6 +23,11 @@ public class MainActivity extends AppCompatActivity implements GetJsonData.OnDat
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerViewAdapter = new RecyclerViewAdapter(this, new ArrayList<Photo>());
+        recyclerView.setAdapter(recyclerViewAdapter);
 
         Log.d(TAG, "onCreate: Ends.");
     }
@@ -59,9 +68,9 @@ public class MainActivity extends AppCompatActivity implements GetJsonData.OnDat
     @Override
     public void onDataAvailable(List<Photo> data, DOWNLOAD_STATUS status) {
         if (status == DOWNLOAD_STATUS.OK) {
-            Log.d(TAG, "OnDownloadComplete: " + data);
+            recyclerViewAdapter.loadNewData(data);
         } else {
-            Log.e(TAG, "OnDownloadComplete: " + status );
+            Log.e(TAG, "OnDownloadComplete: Failed with status " + status + "." );
         }
     }
 }
