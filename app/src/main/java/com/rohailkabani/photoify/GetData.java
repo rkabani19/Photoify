@@ -29,6 +29,18 @@ class GetData extends AsyncTask<String, Void, String> {
         this.callback = callback;
     }
 
+    void runInSameThread (String s) {
+        Log.d(TAG, "runInSameThread: Starts.");
+
+//        onPostExecute(doInBackground(s));
+
+        if (callback != null) {
+            callback.OnDownloadComplete(doInBackground(s), downloadStatus);
+        }
+
+        Log.d(TAG, "runInSameThread: Ends.");
+    }
+
     @Override
     protected void onPostExecute(String s) {
         Log.d(TAG, "onPostExecute: " + s);
@@ -46,6 +58,7 @@ class GetData extends AsyncTask<String, Void, String> {
 
         if (strings == null) {
             downloadStatus = DOWNLOAD_STATUS.NOT_INITIALIZED;
+            return null;
         }
 
         try {
@@ -94,16 +107,4 @@ class GetData extends AsyncTask<String, Void, String> {
         downloadStatus = DOWNLOAD_STATUS.FAILED_OR_EMPTY;
         return null;
     }
-
-//    void runInSameThread (String s) {
-//        Log.d(TAG, "runInSameThread: Starts.");
-//
-////        onPostExecute(doInBackground(s));
-//
-//        if (callback != null) {
-//            callback.OnDownloadComplete(doInBackground(s), downloadStatus);
-//        }
-//
-//        Log.d(TAG, "runInSameThread: Ends.");
-//    }
 }

@@ -8,11 +8,13 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements GetJsonData.OnDataAvailable {
+public class MainActivity extends AppCompatActivity implements GetJsonData.OnDataAvailable, RecyclerClickListener.OnRecyclerClickListener {
     private static final String TAG = "MainActivity";
     private RecyclerViewAdapter recyclerViewAdapter;
 
@@ -26,6 +28,9 @@ public class MainActivity extends AppCompatActivity implements GetJsonData.OnDat
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        recyclerView.addOnItemTouchListener(new RecyclerClickListener(this, recyclerView, this));
+
         recyclerViewAdapter = new RecyclerViewAdapter(this, new ArrayList<Photo>());
         recyclerView.setAdapter(recyclerViewAdapter);
 
@@ -72,5 +77,20 @@ public class MainActivity extends AppCompatActivity implements GetJsonData.OnDat
         } else {
             Log.e(TAG, "OnDownloadComplete: Failed with status " + status + "." );
         }
+
+    }
+
+    @Override
+    public void onItemClick(View view, int positon) {
+        Log.d(TAG, "onItemClick: Starts.");
+        Toast.makeText(MainActivity.this, "Normal tap at position " + positon, Toast.LENGTH_SHORT).show();
+        
+    }
+
+    @Override
+    public void onItemLongClick(View view, int positon) {
+        Log.d(TAG, "onItemLongClick: Starts.");
+        Toast.makeText(MainActivity.this, "Long tap at position " + positon, Toast.LENGTH_SHORT).show();
+
     }
 }

@@ -13,10 +13,6 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-/**
- * Created by rohailkabani on 2018-02-08.
- */
-
 class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.FlickrImageViewHolder> { //only view holders allowed to be used
     private static final String TAG = "RecyclerViewAdapter";
     private List<Photo> photoList;
@@ -44,6 +40,7 @@ class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.Flick
                 .error(R.drawable.img_placeholder)
                 .placeholder(R.drawable.img_placeholder)
                 .into(holder.thumbnail);
+
         holder.title.setText(photoItem.getTitle());
 
     }

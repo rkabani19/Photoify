@@ -11,10 +11,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by rohailkabani on 2018-02-04.
- */
-
 class GetJsonData extends AsyncTask<String, Void, List<Photo>> implements GetData.OnDownloadComplete {
     private static final String TAG = "GetJsonData";
 
@@ -28,6 +24,23 @@ class GetJsonData extends AsyncTask<String, Void, List<Photo>> implements GetDat
 
     interface OnDataAvailable {
         void onDataAvailable (List<Photo> data, DOWNLOAD_STATUS status);
+    }
+
+    public GetJsonData(OnDataAvailable callback, String baseURL, String language, boolean matchAll) {
+        Log.d(TAG, "GetJsonData: constructor initalized.");
+        this.baseURL = baseURL;
+        this.language = language;
+        this.matchAll = matchAll;
+        this.callback = callback;
+    }
+
+    void executeOnSameThread (String searchCriteria) {
+        Log.d(TAG, "executeOnSameThread: Start.");
+        runningOnSameThread = true;
+        String destinationUri = createUri(searchCriteria, language, matchAll);
+        GetData getData = new GetData(this);
+        getData.execute(destinationUri);
+        Log.d(TAG, "executeOnSameThread: Ends.");
     }
 
     @Override
@@ -47,27 +60,10 @@ class GetJsonData extends AsyncTask<String, Void, List<Photo>> implements GetDat
         String destinationUri = createUri(strings[0], language, matchAll);
 
         GetData getData = new GetData(this);
-        getData.execute(destinationUri);
+        getData.runInSameThread(destinationUri);
         Log.d(TAG, "doInBackground: Ends.");
 
         return photoList;
-    }
-
-    public GetJsonData(OnDataAvailable callback, String baseURL, String language, boolean matchAll) {
-        Log.d(TAG, "GetJsonData: constructor initalized.");
-        this.baseURL = baseURL;
-        this.language = language;
-        this.matchAll = matchAll;
-        this.callback = callback;
-    }
-
-    void executeOnSameThread (String searchCriteria) {
-        Log.d(TAG, "executeOnSameThread: Start.");
-        runningOnSameThread = true;
-        String destinationUri = createUri(searchCriteria, language, matchAll);
-        GetData getData = new GetData(this);
-        getData.execute(destinationUri);
-        Log.d(TAG, "executeOnSameThread: Ends.");
     }
 
     private String createUri (String searchCriteria, String lang, boolean matchAll) {
@@ -114,7 +110,7 @@ class GetJsonData extends AsyncTask<String, Void, List<Photo>> implements GetDat
             }
         }
 
-        if (callback != null & runningOnSameThread) {
+        if (runningOnSameThread && callback != null) {
             //now inform the caller that processing is done (possibly returning null if there was an error)
             callback.onDataAvailable(photoList, status);
         }
