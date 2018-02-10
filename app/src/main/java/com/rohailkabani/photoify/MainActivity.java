@@ -65,6 +65,12 @@ public class MainActivity extends BaseActivity implements GetJsonData.OnDataAvai
             return true;
         }
 
+        if (id == R.id.action_search) {
+            Intent intent = new Intent();
+            startActivity(intent);
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
     }
 

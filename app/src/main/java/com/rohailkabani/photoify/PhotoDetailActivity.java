@@ -1,6 +1,7 @@
 package com.rohailkabani.photoify;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -20,14 +21,16 @@ public class PhotoDetailActivity extends BaseActivity {
         Photo photo = (Photo) intent.getSerializableExtra(PHOTO_TRANSFER);
 
         if (photo != null) {
+            Resources resources = getResources();
+
             TextView title = (TextView) findViewById(R.id.photoTitle);
-            title.setText("Title: " + photo.getTitle());
+            title.setText(resources.getString(R.string.photo_title_text, photo.getTitle()));
 
             TextView tags = (TextView) findViewById(R.id.photoTags);
-            tags.setText("Tags: " + photo.getTags());
+            tags.setText(resources.getString(R.string.photo_title_tags, photo.getTags()));
 
             TextView author = (TextView) findViewById(R.id.photoAuthor);
-            author.setText("Author: " + photo.getAuthor());
+            author.setText(resources.getString(R.string.photo_title_author, photo.getAuthor()));
 
             ImageView image = (ImageView) findViewById(R.id.photoImage);
             Picasso.with(this).load(photo.getLink())
