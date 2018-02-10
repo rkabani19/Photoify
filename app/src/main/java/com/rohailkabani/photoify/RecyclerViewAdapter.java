@@ -15,7 +15,7 @@ import java.util.List;
 
 class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.FlickrImageViewHolder> { //only view holders allowed to be used
     private static final String TAG = "RecyclerViewAdapter";
-    private List<Photo> photoList;
+    private static List<Photo> photoList;
     private Context context;
 
     public RecyclerViewAdapter(Context context, List<Photo> photoList) {
@@ -56,7 +56,7 @@ class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.Flick
         notifyDataSetChanged();
     }
 
-    public Photo getPhoto (int position) {
+    public static Photo getPhoto(int position) {
         return ((photoList != null) && (photoList.size()) != 0 ? photoList.get(position) : null);
     }
 

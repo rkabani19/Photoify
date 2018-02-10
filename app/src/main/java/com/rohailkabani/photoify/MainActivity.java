@@ -1,20 +1,18 @@
 package com.rohailkabani.photoify;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements GetJsonData.OnDataAvailable, RecyclerClickListener.OnRecyclerClickListener {
+public class MainActivity extends BaseActivity implements GetJsonData.OnDataAvailable, RecyclerClickListener.OnRecyclerClickListener {
     private static final String TAG = "MainActivity";
     private RecyclerViewAdapter recyclerViewAdapter;
 
@@ -23,8 +21,8 @@ public class MainActivity extends AppCompatActivity implements GetJsonData.OnDat
         Log.d(TAG, "onCreate: Starting.");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+
+        activateToolBar(false);
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -83,14 +81,15 @@ public class MainActivity extends AppCompatActivity implements GetJsonData.OnDat
     @Override
     public void onItemClick(View view, int positon) {
         Log.d(TAG, "onItemClick: Starts.");
-        Toast.makeText(MainActivity.this, "Normal tap at position " + positon, Toast.LENGTH_SHORT).show();
-        
+//        Toast.makeText(MainActivity.this, "Normal tap at position " + positon, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onItemLongClick(View view, int positon) {
         Log.d(TAG, "onItemLongClick: Starts.");
-        Toast.makeText(MainActivity.this, "Long tap at position " + positon, Toast.LENGTH_SHORT).show();
 
+        Intent intent = new Intent(this, PhotoDetailActivity.class); //class literal used to parse the class as the parameter
+        intent.putExtra(PHOTO_TRANSFER, RecyclerViewAdapter.getPhoto(positon));
+        startActivity(intent);
     }
 }

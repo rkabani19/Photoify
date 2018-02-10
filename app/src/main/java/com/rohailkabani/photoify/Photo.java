@@ -1,10 +1,15 @@
 package com.rohailkabani.photoify;
 
+import java.io.Serializable;
+
 /**
  * Created by rohailkabani on 2018-02-04.
  */
 
-class Photo {
+class Photo implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     private String title;
     private String author;
     private String authorID;
