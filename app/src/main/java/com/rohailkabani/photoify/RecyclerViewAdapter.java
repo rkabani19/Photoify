@@ -34,21 +34,25 @@ class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.Flick
 
     @Override
     public void onBindViewHolder(FlickrImageViewHolder holder, int position) {
-        //Called by the layout manager when it wants new data in an existing row
-        Photo photoItem = photoList.get(position);
-        Picasso.with(context).load(photoItem.getImage())
-                .error(R.drawable.img_placeholder)
-                .placeholder(R.drawable.img_placeholder)
-                .into(holder.thumbnail);
+        if ((photoList == null) || (photoList.size() == 0)) {
+            holder.thumbnail.setImageResource(R.drawable.img_placeholder);
+            holder.title.setText(R.string.placeholder_empty);
+        } else {
+            //Called by the layout manager when it wants new data in an existing row
+            Photo photoItem = photoList.get(position);
+            Picasso.with(context).load(photoItem.getImage())
+                    .error(R.drawable.img_placeholder)
+                    .placeholder(R.drawable.img_placeholder)
+                    .into(holder.thumbnail);
 
-        holder.title.setText(photoItem.getTitle());
-
+            holder.title.setText(photoItem.getTitle());
+        }
     }
 
     @Override
     public int getItemCount() {
         Log.d(TAG, "getItemCount: Called.");
-        return ((photoList != null) && (photoList.size() != 0) ? photoList.size(): 0);
+        return ((photoList != null) && (photoList.size() != 0) ? photoList.size(): 1);
     }
 
     void loadNewData (List<Photo> newPhoto) {

@@ -1,7 +1,9 @@
 package com.rohailkabani.photoify;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -39,8 +41,15 @@ public class MainActivity extends BaseActivity implements GetJsonData.OnDataAvai
     protected void onResume() {
         Log.d(TAG, "onResume: Starts.");
         super.onResume();
-        GetJsonData getJsonData = new GetJsonData(this,"https://api.flickr.com/services/feeds/photos_public.gne", "en-us", true);
-        getJsonData.execute("android, nougat");
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        String queryResult = sharedPreferences.getString(FLICKR_QUERY, "");
+
+        if (queryResult.length() > 0) {
+            GetJsonData getJsonData = new GetJsonData(this,"https://api.flickr.com/services/feeds/photos_public.gne", "en-us", true);
+            getJsonData.execute(queryResult);
+        }
+
         Log.d(TAG, "onResume: Ends.");
 
     }
@@ -66,7 +75,7 @@ public class MainActivity extends BaseActivity implements GetJsonData.OnDataAvai
         }
 
         if (id == R.id.action_search) {
-            Intent intent = new Intent();
+            Intent intent = new Intent(this, SearchActivity.class);
             startActivity(intent);
             return true;
         }

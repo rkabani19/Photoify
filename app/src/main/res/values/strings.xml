@@ -4,8 +4,10 @@
     <string name="title_activity_search">SearchActivity</string>
     <string name="title_activity_photo_detail">Photo Detail</string>
     <string name="browse_image_description">Downloaded Flickr photo.</string>
-    <string name="photo_title_text">Title: %s</string>
+    <string name="photo_title_text">%s</string>
     <string name="photo_title_tags">Tags: %s</string>
     <string name="photo_title_author">Author(s): %s</string>
     <string name="activity_search">Search</string>
+    <string name="searchable_hint">Enter photo tags</string>
+    <string name="placeholder_empty">No photos match your search.   Try searching again.</string>
 </resources>
