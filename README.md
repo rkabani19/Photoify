@@ -2,7 +2,7 @@
  Image searching app, using Flickr API.
 
  ### Concepts Used
- * API calls
+ * API requests, and error handling
  * JSON extraction and manipulation
  * Multi-threaded programming
  * Material Design
